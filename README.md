@@ -7,7 +7,7 @@ Setup your environment by installing the requirements using pip.
 pip install -r requirements.txt
 ```
 
-Copy the config.example file and change the extension to py. A database with dummy data is provided [here](https://figshare.com/s/165be05a58e9ec3553ec), place the file in `/Database/miner_database.db`. Data used in the research is available upon request (contact: [a.j.vanaltena@amsterdamumc.nl](mailto:a.j.vanaltena@amsterdamumc.nl)) or may be collected from PubMed using the `qrel` files from the [2017 CLEF eHealth Lab](https://github.com/CLEF-TAR/tar/tree/master/2017-TAR). Follow the steps below to perform the experiments.
+Copy the config.example file to `config.py`. A database with dummy data is provided [here](https://figshare.com/s/165be05a58e9ec3553ec), place the file in `/Database/miner_database.db`. Data used in the research is available upon request (contact: [a.j.vanaltena@amsterdamumc.nl](mailto:a.j.vanaltena@amsterdamumc.nl)) or may be collected from PubMed using the `qrel` files from the [2017 CLEF eHealth Lab](https://github.com/CLEF-TAR/tar/tree/master/2017-TAR). Follow the steps below to perform the experiments.
 
 ### Setup
 
