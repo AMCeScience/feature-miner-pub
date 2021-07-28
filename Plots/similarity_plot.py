@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import Libs.outcome_fetcher as fetcher
 import Libs.similarity_fetcher as sim_fetch
-import pickle, config, sys, pandas as pd, numpy as np
+import pickle, config, os, pandas as pd, numpy as np
 
 
 def plot():
@@ -26,7 +26,7 @@ def plot_curves():
 
   mean_arr = [0] * num_cols
 
-  x = np.arange(1, 50, 1)
+  x = np.arange(1, data.shape[0], 1)
 
   plt.figure()
 
@@ -61,4 +61,10 @@ def plot_curves():
 
   plt.legend()
   plt.tight_layout()
-  plt.savefig(config.PLOT_LOCATION + '/cosine_similarity.pdf')
+
+  filename = config.PLOT_LOCATION + '/cosine_similarity.pdf'
+
+  if not os.path.exists(os.path.dirname(filename)):
+    os.makedirs(os.path.dirname(filename))
+
+  plt.savefig(filename)

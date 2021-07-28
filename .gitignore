@@ -119,3 +119,6 @@ Grid_search/svm_random_search/*
 
 *.xlsx
 *.csv
+
+run1/*
+config.py

@@ -1,11 +1,9 @@
 import os, sys
 root_path = os.path.abspath('')
-sys.path.append(root_path)
+sys.path.append(root_path + '/')
 
 import config
 import csv
-from Preprocessing import read_write_corpus
-import Libs.fold_calculation as fold_calc
 import Libs.performance_calculation as performance
 import Libs.file_storage as file_handle
 import Libs.create_fold as create_fold

@@ -1,6 +1,6 @@
 import Libs.file_storage as file_handle
 import Libs.outcome_fetcher as fetcher
-import pandas as pd, numpy as np, config
+import pandas as pd, numpy as np, config, os
 
 def calculate():
   performance_df = get_data()
@@ -13,13 +13,18 @@ def calculate():
   correlations = df.corr()
 
   # Store correlation matrix as CSV file
-  correlations.to_csv(config.CORRELATION_LOCATION + '/nvsone_performance_to_similarity_correlation_matrix.csv')
+  filename = config.CORRELATION_LOCATION + '/nvsone_performance_to_similarity_correlation_matrix.xlsx'
+
+  if not os.path.exists(os.path.dirname(filename)):
+    os.makedirs(os.path.dirname(filename))
+
+  correlations.to_excel(filename)
 
 
 def get_data():
   # Get the n vs one results
   outcome_fetcher = fetcher.Outcome_fetcher()
-  nvsone_matrix, _, _, _ = outcome_fetcher.get_data('nvsone')
+  nvsone_matrix, _, _, _ = outcome_fetcher.get_data('n_vs_one')
 
   nvsone_labels = config.SIMILARITY_STEPS
   num_runs = int(nvsone_matrix.shape[0] / len(nvsone_labels))

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 import Libs.outcome_fetcher as fetcher
 from scipy import stats
+import config
 
 def plot():
   font = {'size': 16}
@@ -11,8 +12,8 @@ def plot():
   matplotlib.rc('font', **font)
 
   outcome_fetcher = fetcher.Outcome_fetcher()
-  full_data = outcome_fetcher.get_timing_data('leaveoneout')
-  timing_data = outcome_fetcher.get_timing_data('nvsone')
+  full_data = outcome_fetcher.get_timing_data('leave_one_out')
+  timing_data = outcome_fetcher.get_timing_data('n_vs_one')
 
   flat_full_data = full_data[0]
   flat_timing_data = [i for sub in timing_data[0] for i in sub]
@@ -28,4 +29,4 @@ def plot():
   plt.tight_layout()
   plt.savefig(config.PLOT_LOCATION + '/training_duration.pdf')
 
-  print(stats.ranksums(flat_timing_data, flat_full_data).pvalue)
+  # print(stats.ranksums(flat_timing_data, flat_full_data).pvalue)

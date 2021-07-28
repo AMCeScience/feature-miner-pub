@@ -8,6 +8,7 @@ import config, numpy as np
 from scipy import stats
 import statsmodels.stats.multitest as multi
 import pandas as pd
+import os
 
 def plot():
   font = {'size': 16}
@@ -15,7 +16,10 @@ def plot():
   matplotlib.rc('font', **font)
 
   outcome_fetcher = fetcher.Outcome_fetcher()
-  full_data = outcome_fetcher.get_data('leaveoneout')
+  full_data = outcome_fetcher.get_data('leave_one_out')
+
+  if not os.path.exists(config.PLOT_LOCATION):
+    os.makedirs(os.path.dirname(config.PLOT_LOCATION))
 
   section_feature(full_data)
   section_classifier_and_feature(full_data)
@@ -49,7 +53,12 @@ def section_feature(data):
 
   df = pd.DataFrame(significance, columns = ['TM (mean: %f)' % np.mean(tm_values)], index = ['TF (mean: %f)' % np.mean(tf_values)])
 
-  df.to_excel(config.OUTPUT_LOCATION + '/significance_testing/feature_significance.xlsx', engine = 'openpyxl')
+  filename = config.OUTPUT_LOCATION + '/significance_testing/feature_significance.xlsx'
+
+  if not os.path.exists(filename):
+    os.makedirs(os.path.dirname(filename))
+
+  df.to_excel(filename, engine = 'openpyxl')
 
   #### PLOT
 
@@ -65,7 +74,13 @@ def section_feature(data):
   plt.ylabel('WSS@95')
 
   plt.tight_layout()
-  plt.savefig(config.PLOT_LOCATION + '/preliminary_experiment/feature_plot.pdf')
+
+  filename = config.PLOT_LOCATION + '/preliminary_experiment/feature_plot.pdf'
+
+  if not os.path.exists(filename):
+    os.makedirs(os.path.dirname(filename))
+
+  plt.savefig(filename)
 
 
 def section_classifier_and_feature(data):
@@ -248,6 +263,7 @@ def section_reviews(data):
   plt.gcf().canvas.draw()
   # Get the widest tick label
   tl = plt.gca().get_xticklabels()
+  print(tl)
   maxsize = max([t.get_window_extent().width for t in tl])
 
   # Calculate new width and adjust the plot

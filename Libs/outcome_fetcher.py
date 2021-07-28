@@ -20,16 +20,16 @@ class Outcome_fetcher(object):
     self.num_runs = self.count_runs()
     self.num_dataset = self.count_datasets()
 
-    if self.outcome_type == 'leaveoneout':
+    if self.outcome_type == 'leave_one_out':
       return self.get_leaveoneout_data()
 
-    if self.outcome_type == 'onevsone':
+    if self.outcome_type == 'one_vs_one':
       return self.get_onevsone_data()
 
-    if self.outcome_type == 'nvsone':
+    if self.outcome_type == 'n_vs_one':
       return self.get_nvsone_data()
 
-    if self.outcome_type == 'nvsone_random':
+    if self.outcome_type == 'n_vs_one_random':
       return self.get_nvsone_random_data()
 
 
@@ -39,17 +39,22 @@ class Outcome_fetcher(object):
     self.num_runs = self.count_runs()
     self.num_dataset = self.count_datasets()
 
-    if self.outcome_type == 'leaveoneout':
+    if self.outcome_type == 'leave_one_out':
       return self.get_leaveoneout_timing()
 
-    if self.outcome_type == 'nvsone':
+    if self.outcome_type == 'n_vs_one':
       return self.get_nvsone_timing()
 
 
   def count_runs(self):
     folders = [name for name in os.listdir(config.OUTPUT_LOCATION + '/' + self.outcome_type) if 'run_' in name]
 
-    return len(folders)
+    runs = len(folders)
+
+    if runs == 0:
+      return 1
+
+    return runs
 
 
   def count_datasets(self):
@@ -64,7 +69,7 @@ class Outcome_fetcher(object):
 
     # Loop over the datasets
     for i in range(1, self.num_dataset + 1):
-      result = file_handle.load_external_classifier('onevsone', 1, i, 'tfidf', None)
+      result = file_handle.load_external_classifier('one_vs_one', 1, i, 'tfidf', None)
 
       # Retrieve the WSS values from the data dictionary
       result_vect = [i['wss_95'] for i in result['outcomes']]
@@ -91,7 +96,7 @@ class Outcome_fetcher(object):
 
     # Loop over the datasets
     for i in range(1, self.num_dataset + 1):
-      result = file_handle.load_external_classifier('nvsone', num_run, i, 'tfidf', None)
+      result = file_handle.load_external_classifier('n_vs_one', num_run, i, 'tfidf', None)
 
       if self.subset_names is not None and result['test_review'] not in self.subset_names:
         continue
@@ -120,7 +125,7 @@ class Outcome_fetcher(object):
         similarity_matrix = np.vstack([similarity_matrix, run_similarity_matrix])
 
     outcome_fetcher = Outcome_fetcher()
-    leaveoneout_matrix = outcome_fetcher.get_data('leaveoneout', test_review_names)
+    leaveoneout_matrix = outcome_fetcher.get_data('leave_one_out', test_review_names)
 
     def sect(x):
       # Get the first cell of a apply_along_axis value.
@@ -149,7 +154,7 @@ class Outcome_fetcher(object):
 
     # Loop over the datasets
     for i in range(1, self.num_dataset + 1):
-      result = file_handle.load_external_classifier('nvsone', num_run, i, 'tfidf', None)
+      result = file_handle.load_external_classifier('n_vs_one', num_run, i, 'tfidf', None)
 
       if self.subset_names is not None and result['test_review'] not in self.subset_names:
         continue
@@ -187,7 +192,7 @@ class Outcome_fetcher(object):
 
     # Loop over the datasets
     for i in range(1, self.num_dataset + 1):
-      result = file_handle.load_external_classifier('nvsone_random', 1, i, 'tfidf', None)
+      result = file_handle.load_external_classifier('n_vs_one_random', 1, i, 'tfidf', None)
 
       outcome_sets = result['sets']
 
@@ -216,7 +221,7 @@ class Outcome_fetcher(object):
 
     # Loop over the TF datasets
     for i in range(1, self.num_dataset + 1):
-      fold_data = file_handle.load_external_classifier('leaveoneout', num_run, i, dataset_type, tm_set)
+      fold_data = file_handle.load_external_classifier('leave_one_out', num_run, i, dataset_type, tm_set)
 
       if self.subset_names is not None and fold_data['test_review_names'][0] not in self.subset_names:
         continue
@@ -267,7 +272,7 @@ class Outcome_fetcher(object):
 
     # Loop over the TF datasets
     for i in range(1, self.num_dataset + 1):
-      fold_data = file_handle.load_external_classifier('leaveoneout', num_run, i, dataset_type, tm_set)
+      fold_data = file_handle.load_external_classifier('leave_one_out', num_run, i, dataset_type, tm_set)
 
       if self.subset_names is not None and fold_data['test_review_names'][0] not in self.subset_names:
         continue

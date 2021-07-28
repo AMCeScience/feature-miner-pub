@@ -2,7 +2,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import Libs.file_storage as file_handle
 import Libs.outcome_fetcher as fetcher
 import Database.db_connector as db
-import pandas as pd, numpy as np, config
+import pandas as pd, numpy as np, config, os
 
 def calculate():
   metadata_df = get_dataframe()
@@ -11,18 +11,31 @@ def calculate():
   correlations = metadata_df.corr()
 
   # Store correlation matrix as CSV file
-  correlations.to_csv(config.CORRELATION_LOCATION + '/leaveoneout_metadata_correlation_matrix.csv')
+  filename = config.CORRELATION_LOCATION + '/leaveoneout_metadata_correlation_matrix.xlsx'
+
+  if not os.path.exists(os.path.dirname(filename)):
+    os.makedirs(os.path.dirname(filename))
+
+  correlations.to_excel(filename)
 
 
 def get_dataframe():
-  review_meta = pd.read_csv(config.TEXT_DATA_LOCATION + '/review metadata.csv')
+  filename = config.TEXT_DATA_LOCATION + '/review metadata.xlsx'
+
+  try:
+    open(filename, 'rb')
+  except (FileNotFoundError, OSError, IOError) as e:
+    print('Download the review metadata file from https://doi.org/10.6084/m9.figshare.7804094.v1 and place it in the folder: %s' % config.TEXT_DATA_LOCATION)
+    quit()
+
+  review_meta = pd.read_excel(filename, engine = 'openpyxl')
   
   # Cut off columns not used for correlation calculation
   review_meta = review_meta.loc[:, 'is update':]
 
   # Get the leave one out results
   outcome_fetcher = fetcher.Outcome_fetcher()
-  leaveoneout_matrix = outcome_fetcher.get_data('leaveoneout')
+  leaveoneout_matrix = outcome_fetcher.get_data('leave_one_out')
 
   # Cut off the identifier column and change data to float
   leaveoneout_matrix = leaveoneout_matrix[:, 1:].astype(float)

@@ -17,9 +17,6 @@ class Nvsone_plot(object):
 
   colors = [0, 2, 1, 3, 4, 5, 6, 7, 8, 9]
 
-  singles = ['CD009647', 'CD008054', 'CD010438', 'CD009185', 'CD008691', 'CD008081', 'CD010023', 'CD009591', 'CD009372', 'CD008803', 'CD012019', 'CD008760']
-  groups = ['CD007427', 'CD010542', 'CD010705', 'CD009593', 'CD009551', 'CD007394', 'CD009135', 'CD009579', 'CD010173', 'CD010276', 'CD009944', 'CD011134', 'CD009323', 'CD009519', 'CD010409', 'CD009786', 'CD010386', 'CD010632', 'CD008782', 'CD010772', 'CD010771', 'CD011145', 'CD010653', 'CD010860', 'CD010775', 'CD010783', 'CD010633', 'CD010896', 'CD011549', 'CD011548', 'CD010339', 'CD007431', 'CD008686', 'CD011984', 'CD009925', 'CD011975', 'CD008643', 'CD009020']
-
   nvsone_matrix = None
   leaveoneout_matrix = None
   review_names = None
@@ -27,6 +24,11 @@ class Nvsone_plot(object):
   run_similarities = None
 
   def __init__(self):
+    self.singles = config.GROUPS['singles']
+
+    groups = {k: v for k, v in config.GROUPS.items() if k != 'singles'}
+    self.groups = [x for v in groups.values() for x in v]
+
     self.plot()
 
 
@@ -35,9 +37,9 @@ class Nvsone_plot(object):
     np.fill_diagonal(self.similarity_matrix.values, 0)
 
     outcome_fetcher = fetcher.Outcome_fetcher()
-    self.nvsone_matrix, self.leaveoneout_matrix, self.run_similarities, self.review_names = outcome_fetcher.get_data('nvsone')
+    self.nvsone_matrix, self.leaveoneout_matrix, self.run_similarities, self.review_names = outcome_fetcher.get_data('n_vs_one')
 
-    self.nvsone_random_matrix = outcome_fetcher.get_data('nvsone_random')
+    self.nvsone_random_matrix = outcome_fetcher.get_data('n_vs_one_random')
 
     self.group_compare()
     self.mean_compare()
@@ -599,7 +601,7 @@ class Nvsone_plot(object):
     num_datasets = self.nvsone_matrix.shape[1]
 
     for i in range(1, num_datasets):
-      dat = file_handle.load_external_classifier('nvsone', 1, i, 'tfidf', None)
+      dat = file_handle.load_external_classifier('n_vs_one', 1, i, 'tfidf', None)
 
       prev_set_len = 0
 
@@ -626,7 +628,7 @@ class Nvsone_plot(object):
     sorted_values = [i[1] for i in sorted_data]
     sorted_keys = [i[0] for i in sorted_data]
 
-    x = range(1,51)
+    x = range(1,len(sorted_values) + 1)
     y = sorted_values
 
     plt.figure()

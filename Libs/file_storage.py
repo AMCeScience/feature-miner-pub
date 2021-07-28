@@ -1,22 +1,27 @@
-import config, pickle
+import config, pickle, os
 
-def store_classifier(i, feature_type, classifier_obj, dataset_num = None):
+def store_classifier(i, feature_type, classifier_obj, dataset_num, experiment_type):
   dataset_name = 'classifier'
 
   if feature_type == 'tm':
     dataset_name = 'classifier_%i' % dataset_num
 
-  with open(config.CLASSIFIER_LOCATION + '/%i_%s_%s.pickle' % (i, feature_type, dataset_name), 'wb') as handle:
+  filename = config.CLASSIFIER_LOCATION + '/%s/%i_%s_%s.pickle' % (experiment_type, i, feature_type, dataset_name)
+
+  if not os.path.exists(os.path.dirname(filename)):
+    os.makedirs(os.path.dirname(filename))
+
+  with open(filename, 'wb') as handle:
     pickle.dump(classifier_obj, handle, protocol = pickle.HIGHEST_PROTOCOL)
 
 
-def load_classifier(i, feature_type, dataset_num = None):
+def load_classifier(i, feature_type, dataset_num, experiment_type):
   dataset_name = 'classifier'
 
   if feature_type == 'tm':
     dataset_name = 'classifier_%i' % dataset_num
 
-  filename = config.CLASSIFIER_LOCATION + '/%i_%s_%s.pickle' % (i, feature_type, dataset_name)
+  filename = config.CLASSIFIER_LOCATION + '/%s/%i_%s_%s.pickle' % (experiment_type, i, feature_type, dataset_name)
 
   if file_exists(filename):
     return read_file(filename)
@@ -27,7 +32,12 @@ def load_classifier(i, feature_type, dataset_num = None):
 def store_classifier_part(i, feature_type, part, classifier_obj):
   dataset_name = 'classifier'
 
-  with open(config.CLASSIFIER_PART_LOCATION + '/%i_%s_%s_part%i.pickle' % (i, feature_type, dataset_name, part), 'wb') as handle:
+  filename = config.CLASSIFIER_PART_LOCATION + '/%i_%s_%s_part%i.pickle' % (i, feature_type, dataset_name, part)
+
+  if not os.path.exists(os.path.dirname(filename)):
+    os.makedirs(os.path.dirname(filename))
+
+  with open(filename, 'wb') as handle:
     pickle.dump(classifier_obj, handle, protocol = pickle.HIGHEST_PROTOCOL)
 
 
@@ -48,7 +58,8 @@ def load_external_classifier(experiment, num_run, i, feature_type, dataset_num =
   if dataset_num is not None:
     dataset_name = 'classifier_%i' % dataset_num
 
-  filename = config.CLASSIFIER_LOCATION + '/%s/run_%i/%i_%s_%s.pickle' % (experiment, num_run, i, feature_type, dataset_name)
+  # filename = config.CLASSIFIER_LOCATION + '/%s/run_%i/%i_%s_%s.pickle' % (experiment, num_run, i, feature_type, dataset_name)
+  filename = config.CLASSIFIER_LOCATION + '/%s/%i_%s_%s.pickle' % (experiment, i, feature_type, dataset_name)
 
   if file_exists(filename):
     return read_file(filename)

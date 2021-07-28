@@ -11,7 +11,7 @@ def plot():
   matplotlib.rc('font', **font)
 
   outcome_fetcher = fetcher.Outcome_fetcher()
-  matrix = outcome_fetcher.get_data('onevsone')
+  matrix = outcome_fetcher.get_data('one_vs_one')
 
   plot_ordered_heatmap(matrix)
   plot_unordered_heatmap(matrix)
@@ -54,8 +54,6 @@ def plot_ordered_heatmap(matrix, new_figure = True):
   plt.ylabel('Training Review Index\n(ordered by mean row value)')
   plt.tick_params(axis = 'y', left = False, labelleft = False)
 
-  plt.tight_layout()
-
   # Reset matplotlib if necessary
   if new_figure:
     plt.savefig(config.PLOT_LOCATION + '/heatmap.pdf')
@@ -72,8 +70,6 @@ def plot_unordered_heatmap(matrix, new_figure = True):
 
   plt.xlabel('Test Review Index')
   plt.ylabel('Training Review Index')
-
-  plt.tight_layout()
 
   # Reset matplotlib if necessary
   if new_figure:
@@ -94,5 +90,4 @@ def plot_side_by_side(matrix):
   plt.title('(b)')
   plot_ordered_heatmap(matrix, False)
 
-  plt.tight_layout()
   plt.savefig(config.PLOT_LOCATION + '/double_heatmap.pdf')

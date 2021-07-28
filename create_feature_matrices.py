@@ -138,7 +138,7 @@ def get_cosine_similarity(matrix):
 
 
 def get_group_similarity(labels, mean_review_matrix):
-  group_labels = [1, 2, 3, 4, 5, 6, 7, 'Other']
+  group_labels = config.GROUP_LABELS
 
   group_matrix = None
 

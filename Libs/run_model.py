@@ -53,27 +53,28 @@ class Run_model(object):
           fold_creator = fold_creator,
           run_func = self.run_func,
           feature_type = self.feature_type,
-          dataset_num = dataset_num)
+          dataset_num = dataset_num,
+          experiment_type = self.experiment_type)
 
       with Pool(processes = config.POOL_PROCESSES) as pool:
         # Parallelise the folds
         pool.map(parallel_func, fold_range)
     else:
       for fold in fold_range:
-        self.run_fold(fold, fold_creator, self.run_func, self.feature_type, dataset_num)
+        self.run_fold(fold, fold_creator, self.run_func, self.feature_type, dataset_num, self.experiment_type)
 
     print('Number of docs in matrix: %i' % fold_creator.X.shape[0])
     print('Number of docs in test sets: %i' % fold_creator.x_test_total_size)
 
 
-  def run_fold(self, fold, fold_creator, run_func, feature_type, dataset_num):
+  def run_fold(self, fold, fold_creator, run_func, feature_type, dataset_num, experiment_type):
     print('on fold #%i' % fold)
 
-    classifier_obj = file_handle.load_classifier(fold, feature_type, dataset_num)
+    classifier_obj = file_handle.load_classifier(fold, feature_type, dataset_num, experiment_type)
 
     if classifier_obj is None:
       data = fold_creator.get_fold(fold)
 
       classifier_obj = run_func(data, fold)
 
-      file_handle.store_classifier(fold, feature_type, classifier_obj, dataset_num)
+      file_handle.store_classifier(fold, feature_type, classifier_obj, dataset_num, experiment_type)
